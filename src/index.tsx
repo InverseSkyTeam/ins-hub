@@ -27,7 +27,7 @@ const App = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
                 {imgs.map((img: any, index) => (
                     <Card key={index}>
-                        <CardMedia image={img.download_url} />
+                        <CardMedia image={img.download_url.replace("https://raw.githubusercontent.com/ClassIsland/classisland-hub/main/images/", "./images/")} />
                         <CardContent>
                             <Typography variant="h5" component="div">
                                 {img.name}
