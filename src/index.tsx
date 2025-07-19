@@ -23,14 +23,17 @@ const App = () => {
 
     return (
         <Container>
-            <div style={{ display: "flex" }}>
+            <div style={{ display: 'flex' }}>
                 <Typography variant="h3" component="div">
                     INS Hub
                 </Typography>
                 <div style={{ flexGrow: 1 }} />
-                <Button variant="outlined" onClick={() => {
-                    window.open("https://github.com/InverseSkyTeam/ins-hub/upload/master/images");
-                }}>
+                <Button
+                    variant="outlined"
+                    onClick={() => {
+                        window.open('https://github.com/InverseSkyTeam/ins-hub/upload/master/images');
+                    }}
+                >
                     前往 GitHub 上传图片
                 </Button>
             </div>
@@ -43,15 +46,10 @@ const App = () => {
                             padding: '16px',
                         }}
                         onClick={() => {
-                            window.open(`./images/${img.name}`)
+                            window.open(`./images/${img.name}`);
                         }}
                     >
-                        <CardMedia
-                            component="img"
-                            alt={img.name}
-                            loading="lazy"
-                            src={`./images/${img.name}`}
-                        />
+                        <CardMedia component="img" alt={img.name} loading="lazy" src={`./images/${img.name}`} />
                         <CardContent>
                             <Typography variant="h5" component="div">
                                 {img.name}
