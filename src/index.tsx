@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Card, Container, Typography, CardMedia, CardContent } from '@mui/material';
+import Masonry from '@mui/lab/Masonry';
 import 'tailwindcss/index.css';
 
 const App = () => {
@@ -25,23 +26,13 @@ const App = () => {
             <Typography variant="h3" component="div">
                 INS Hub
             </Typography>
-            <div
-                style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '16px',
-                    justifyContent: 'flex-start',
-                }}
-            >
+            <Masonry columns={4} spacing={2}>
                 {imgs.map((img: any, index) => (
                     <Card
                         key={index}
                         style={{
-                            width: 'calc(25% - 12px)',
-                            marginBottom: '16px',
                             textAlign: 'center',
                             padding: '16px',
-                            boxSizing: 'border-box',
                         }}
                     >
                         <CardMedia
@@ -57,7 +48,7 @@ const App = () => {
                         </CardContent>
                     </Card>
                 ))}
-            </div>
+            </Masonry>
         </Container>
     );
 };
