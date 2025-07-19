@@ -45,6 +45,7 @@ const App = () => {
                         style={{
                             textAlign: 'center',
                             padding: '16px',
+                            display: img.name !== 'output.webp' ? 'block' : 'none',
                         }}
                         onClick={() => {
                             window.open(`./images/${img.name}`);
