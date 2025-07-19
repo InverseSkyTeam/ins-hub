@@ -12,7 +12,12 @@ const App = () => {
             const response = await fetch('https://api.github.com/repos/InverseSkyTeam/ins-hub/contents/images');
             // const response = await fetch('https://api.github.com/repos/ClassIsland/ClassIsland-hub/contents/images');
             const data = await response.json();
-            if (!ignore) setImgs(data);
+            const newData = {};
+            for (const item of data) {
+                if (item.name === 'output.webp') continue;
+                newData[item.name] = item;
+            }
+            if (!ignore) setImgs(Object.values(newData));
         };
 
         if (!ignore) func().then(() => null);
@@ -45,7 +50,6 @@ const App = () => {
                         style={{
                             textAlign: 'center',
                             padding: '16px',
-                            display: img.name !== 'output.webp' ? 'block' : 'none',
                         }}
                         onClick={() => {
                             window.open(`./images/${img.name}`);
