@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Card, Container, Typography, CardMedia, CardContent } from '@mui/material';
+import { Card, Container, Typography, CardMedia, CardContent, Button } from '@mui/material';
 import Masonry from '@mui/lab/Masonry';
 import 'tailwindcss/index.css';
 
@@ -23,9 +23,17 @@ const App = () => {
 
     return (
         <Container>
-            <Typography variant="h3" component="div">
-                INS Hub
-            </Typography>
+            <div style={{ display: "flex" }}>
+                <Typography variant="h3" component="div">
+                    INS Hub
+                </Typography>
+                <div style={{ flexGrow: 1 }} />
+                <Button variant="outlined" onClick={() => {
+                    window.open("https://github.com/InverseSkyTeam/ins-hub/upload/master/images");
+                }}>
+                    前往 GitHub 上传图片
+                </Button>
+            </div>
             <Masonry columns={4} spacing={2}>
                 {imgs.map((img: any, index) => (
                     <Card
