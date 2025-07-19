@@ -27,20 +27,21 @@ const App = () => {
             </Typography>
             <div
                 style={{
-                    columnCount: 4,
-                    columnGap: '16px',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '16px',
+                    justifyContent: 'flex-start',
                 }}
             >
                 {imgs.map((img: any, index) => (
                     <Card
                         key={index}
                         style={{
-                            display: 'inline-block',
-                            width: '100%',
+                            width: 'calc(25% - 12px)',
                             marginBottom: '16px',
                             textAlign: 'center',
-                            breakInside: 'avoid',
                             padding: '16px',
+                            boxSizing: 'border-box',
                         }}
                     >
                         <CardMedia
