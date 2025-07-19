@@ -47,10 +47,7 @@ const App = () => {
                             component="img"
                             alt={img.name}
                             loading="lazy"
-                            src={img.download_url.replace(
-                                'https://raw.githubusercontent.com/InverseSkyTeam/ins-hub/main/images/',
-                                './images/',
-                            )}
+                            src={`./images/${img.name}`}
                         />
                         <CardContent>
                             <Typography variant="h5" component="div">
