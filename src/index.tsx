@@ -13,7 +13,7 @@ const App = () => {
             const data = await response.json();
             if (!ignore) setImgs(data);
         };
-        
+
         if (!ignore) func().then(() => null);
         return () => {
             ignore = true;
@@ -46,8 +46,11 @@ const App = () => {
                         <CardMedia
                             component="img"
                             alt={img.name}
-                            loading='lazy'
-                            src={img.download_url.replace("https://raw.githubusercontent.com/InverseSkyTeam/ins-hub/main/images/", "./images/")}
+                            loading="lazy"
+                            src={img.download_url.replace(
+                                'https://raw.githubusercontent.com/InverseSkyTeam/ins-hub/main/images/',
+                                './images/',
+                            )}
                         />
                         <CardContent>
                             <Typography variant="h5" component="div">
