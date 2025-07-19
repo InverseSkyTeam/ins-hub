@@ -34,6 +34,9 @@ const App = () => {
                             textAlign: 'center',
                             padding: '16px',
                         }}
+                        onClick={() => {
+                            window.open(`./images/${img.name}`)
+                        }}
                     >
                         <CardMedia
                             component="img"
