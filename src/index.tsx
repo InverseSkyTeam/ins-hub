@@ -50,7 +50,7 @@ const App = () => {
                         style={{
                             textAlign: 'center',
                             padding: '16px',
-                            cursor: pointer,
+                            cursor: 'pointer',
                         }}
                         onClick={() => {
                             window.open(`./images/${img.name}`);
