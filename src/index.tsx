@@ -29,7 +29,16 @@ const App = () => {
 
     return (
         <>
-        <div style={{ display: 'flex', marginBottom: '16px', backgroundColor: '#141428' }}>
+        <div 
+            style={{
+                display: 'flex',
+                marginBottom: '16px',
+                backgroundColor: 'rgba(81, 81, 99, 0.85)',
+                backdropFilter: 'blur(4px)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                userSelect: 'none',
+            }}
+        >
             <img src="./images/output.webp" loading='lazy' alt="logo" style={{ height: '50px' }} />
             <Typography variant="h3" component="div" color="#66faca">
                 INS Hub
