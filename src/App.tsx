@@ -34,7 +34,7 @@ export default function App() {
     })();
 
     return (
-        <div className="min-h-screen w-full dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50">
+        <div className="min-h-screen w-full bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 from-blue-50 to-purple-50 to-indigo-50">
             <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-white/30 dark:border-gray-700/30 shadow-sm flex justify-between items-center px-4 py-2">
                 <div className="flex items-center">
                     <div className="bg-gradient-to-r from-blue-400 to-indigo-600 p-1 rounded-xl">
