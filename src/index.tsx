@@ -28,7 +28,7 @@ const App = () => {
 
     return (
         <Container>
-            <div style={{ display: 'flex', marginBottom: '16px', backgroundcolor: 'black' }}>
+            <div style={{ display: 'flex', marginBottom: '16px', backgroundColor: '#141428' }}>
                 <img src="./images/output.webp" loading='lazy' alt="logo" style={{ height: '50px' }} />
                 <Typography variant="h3" component="div">
                     INS Hub
