@@ -30,7 +30,7 @@ const App = () => {
         <Container>
             <div style={{ display: 'flex', marginBottom: '16px', backgroundColor: '#141428' }}>
                 <img src="./images/output.webp" loading='lazy' alt="logo" style={{ height: '50px' }} />
-                <Typography variant="h3" component="div">
+                <Typography variant="h3" component="div" color="white">
                     INS Hub
                 </Typography>
                 <div style={{ flexGrow: 1 }} />
@@ -38,6 +38,9 @@ const App = () => {
                     variant="outlined"
                     onClick={() => {
                         window.open('https://github.com/InverseSkyTeam/ins-hub/upload/master/images');
+                    }}
+                    style={{
+                        margin: 4
                     }}
                 >
                     前往 GitHub 上传图片
