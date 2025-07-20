@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Card, Container, Typography, CardMedia, CardContent, Button } from '@mui/material';
 import Masonry from '@mui/lab/Masonry';
-import 'tailwindcss/index.css';
+import "./styles/base.css";
 
 const App = () => {
     const [imgs, setImgs] = React.useState<any[]>([]);
