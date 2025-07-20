@@ -144,7 +144,7 @@ export default function App() {
                                         <img
                                             src={`https://ins-hub.lrsgzs.top/images/${img.name}`}
                                             alt={img.name.replace(/\.[^/.]+$/, '')}
-                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            className="w-full h-full transition-transform duration-500 group-hover:scale-105 object-contain"
                                             loading="lazy"
                                         />
                                     </div>
