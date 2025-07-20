@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ThemeModeButton from '@/components/ThemeModeButton.tsx';
-import { Upload, Search, Menu, X } from 'lucide-react';
+import { Upload, Search, Menu, X, CircleX } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Image {
@@ -12,26 +12,40 @@ export default function App() {
     const [searchQuery, setSearchQuery] = useState('');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [imgs, setImgs] = useState<Image[]>([]);
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    const filteredImages = imgs.filter((img) =>
+    const filteredImages = imgs.filter(img =>
         img.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    (async () => {
-        try {
-            const res = await fetch(
-                'https://api.github.com/repos/InverseSkyTeam/ins-hub/contents/images'
-            );
-            const data = await res.json();
+    useEffect(() => {
+        const fetchImages = async () => {
+            try {
+                const res = await fetch('https://api.github.com/repos/InverseSkyTeam/ins-hub/contents/images');
+                const data = await res.json();
 
-            if (!res.ok) throw new Error(data.message || '无法获取图像，请稍后再试');
+                if (!res.ok) throw new Error(data.message || '无法获取图像，请稍后再试');
 
-            const imgData = data.filter((item: Image) => item.name !== 'output.webp');
-            setImgs(imgData);
-        } catch (err: any) {
-            toast.error('发生了错误!', err.message || '无法获取图像，请稍后再试');
-        }
-    })();
+                const imgData = data.filter((item: any) =>
+                    item.name !== 'output.webp' && item.type === 'file'
+                ).map((item: any, index: number) => ({
+                    id: index,
+                    name: item.name
+                }));
+
+                setImgs(imgData);
+                setError(null);
+            } catch (err: any) {
+                toast.error('发生了错误!', { description: err.message || '无法获取图像，请稍后再试' });
+                setError(err.message || '无法获取图像，请稍后再试');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchImages();
+    }, []);
 
     return (
         <div className="min-h-screen w-full bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 from-blue-50 to-purple-50 to-indigo-50">
@@ -51,7 +65,7 @@ export default function App() {
                         type="text"
                         placeholder="搜索图片..."
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={e => setSearchQuery(e.target.value)}
                         className="dark:text-gray-400 w-full bg-white/70 dark:bg-gray-800/70 border border-gray-200 dark:border-gray-700 rounded-full py-2 px-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                 </div>
@@ -87,7 +101,7 @@ export default function App() {
                                 type="text"
                                 placeholder="搜索图片..."
                                 value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onChange={e => setSearchQuery(e.target.value)}
                                 className="w-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-full py-2 px-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
                         </div>
@@ -105,41 +119,57 @@ export default function App() {
             )}
 
             <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                    {filteredImages.map((img) => (
-                        <div
-                            key={img.id}
-                            className="group relative cursor-pointer rounded-xl overflow-hidden shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl"
-                        >
-                            <div className="aspect-[2/3] relative">
-                                <img
-                                    src={`http://ins-hub.lrsgzs.top/images/${img.name}`}
-                                    alt={img.name.replace(/\.(jpg|jpeg|png|gif|webp|svg)$/i, '')}
-                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                />
-                            </div>
-
-                            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-3">
-                                <p className="text-gray-800 dark:text-gray-200 font-medium text-center truncate">
-                                    {img.name.replace(/\.(jpg|jpeg|png|gif|webp|svg)$/i, '')}
-                                </p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {filteredImages.length === 0 && (
+                {loading ? (
+                    <div className="text-center py-20">
+                        <div className="animate-pulse bg-gradient-to-r from-blue-400 to-indigo-600 rounded-xl w-16 h-16 mx-auto mb-4"></div>
+                        <p className="text-gray-600 dark:text-gray-400">正在加载图片...</p>
+                    </div>
+                ) : error ? (
                     <div className="text-center py-20">
                         <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto flex items-center justify-center">
-                            <Search className="h-8 w-8 text-gray-500" />
+                            <CircleX className="h-8 w-8 text-red-500" />
                         </div>
                         <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-white">
-                            未找到匹配的图片
+                            发生了一些错误! 请尝试刷新页面!
                         </h3>
-                        <p className="mt-2 text-gray-600 dark:text-gray-400">
-                            尝试其他搜索关键词或上传新图片
-                        </p>
+                        <p className="mt-2 text-gray-600 dark:text-gray-400">{error}</p>
                     </div>
+                ) : (
+                    <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                            {filteredImages.map(img => (
+                                <div
+                                    key={img.id}
+                                    className="group relative cursor-pointer rounded-xl overflow-hidden shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl"
+                                >
+                                    <div className="aspect-[2/3] relative">
+                                        <img
+                                            src={`https://ins-hub.lrsgzs.top/images/${img.name}`}
+                                            alt={img.name.replace(/\.[^/.]+$/, "")}
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            loading="lazy"
+                                        />
+                                    </div>
+
+                                    <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-3">
+                                        <p className="text-gray-800 dark:text-gray-200 font-medium text-center truncate">
+                                            {img.name.replace(/\.[^/.]+$/, "")}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {filteredImages.length === 0 && (
+                            <div className="text-center py-20">
+                                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto flex items-center justify-center">
+                                    <Search className="h-8 w-8 text-gray-500" />
+                                </div>
+                                <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-white">未找到匹配的图片</h3>
+                                <p className="mt-2 text-gray-600 dark:text-gray-400">尝试其他搜索关键词或上传新图片</p>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>
