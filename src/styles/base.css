@@ -1,5 +1,29 @@
 @import "tailwindcss/index.css";
 
 body {
-    background-color: linear-gradient(to right bottom, rgba(111,255,255,0.2), rgba(111,255,189,0.3), rgba(255,233,111,0.4))
+    background: linear-gradient(
+        to right bottom,
+        rgba(20, 20, 40, 0.95),
+        rgba(34, 40, 60, 0.95),
+        rgba(44, 62, 80, 0.95)
+    );
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+::-webkit-scrollbar-track:hover {
+    background: #f1f1f1;
 }
