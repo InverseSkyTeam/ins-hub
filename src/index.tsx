@@ -7,6 +7,7 @@ import 'tailwindcss/index.css';
 const App = () => {
     const [imgs, setImgs] = React.useState<any[]>([]);
     React.useEffect(() => {
+        document.body.style.background = 'linear-gradient(to right bottom,rgba(111,255,255,0.2),rgba(111,255,189,0.3),rgba(255,233,111,0.4))';
         let ignore = false;
         const func = async () => {
             const response = await fetch('https://api.github.com/repos/InverseSkyTeam/ins-hub/contents/images');
@@ -23,6 +24,7 @@ const App = () => {
         if (!ignore) func().then(() => null);
         return () => {
             ignore = true;
+            document.body.style.background = '';
         };
     }, []);
 
