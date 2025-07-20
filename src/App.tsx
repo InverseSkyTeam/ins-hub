@@ -1,19 +1,6 @@
 import { useState, useEffect } from 'react';
-import {
-    AppBar, Toolbar, IconButton, Button, InputBase,
-    Grid, Box, CircularProgress, Drawer, useMediaQuery,
-    ThemeProvider, createTheme, PaletteMode, CssBaseline,
-    Typography, Card, CardMedia, CardContent, Paper, useTheme
-} from '@mui/material';
-import {
-    Upload as UploadIcon,
-    Search as SearchIcon,
-    Menu as MenuIcon,
-    Close as CloseIcon,
-    Close as CircleXIcon,
-    Brightness4 as DarkIcon,
-    Brightness7 as LightIcon
-} from '@mui/icons-material';
+import ThemeModeButton from '@/components/ThemeModeButton.tsx';
+import { Upload, Search, Menu, X, CircleX } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Image {
@@ -21,121 +8,14 @@ interface Image {
     name: string;
 }
 
-const getDesignTokens = (mode: PaletteMode) => ({
-    palette: {
-        mode,
-        ...(mode === 'light'
-            ? {
-                primary: {
-                    main: '#3f51b5',
-                },
-                secondary: {
-                    main: '#f50057',
-                },
-                background: {
-                    default: '#e3f2fd',
-                    paper: 'rgba(255, 255, 255, 0.8)',
-                },
-                text: {
-                    primary: '#212121',
-                    secondary: '#757575',
-                }
-            }
-            : {
-                primary: {
-                    main: '#7986cb',
-                },
-                secondary: {
-                    main: '#ff4081',
-                },
-                background: {
-                    default: '#0d47a1',
-                    paper: 'rgba(33, 33, 33, 0.8)',
-                },
-                text: {
-                    primary: '#e0e0e0',
-                    secondary: '#b0b0b0',
-                }
-            }),
-    },
-    typography: {
-        fontFamily: [
-            '-apple-system',
-            'BlinkMacSystemFont',
-            '"Segoe UI"',
-            'Roboto',
-            '"Helvetica Neue"',
-            'Arial',
-            'sans-serif',
-            '"Apple Color Emoji"',
-            '"Segoe UI Emoji"',
-            '"Segoe UI Symbol"',
-        ].join(','),
-        h5: {
-            fontWeight: 700,
-        },
-    },
-    components: {
-        MuiAppBar: {
-            styleOverrides: {
-                root: {
-                    backdropFilter: 'blur(20px)',
-                    backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(33, 33, 33, 0.8)',
-                    borderBottom: mode === 'light' ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid rgba(66, 66, 66, 0.3)',
-                },
-            },
-        },
-        MuiButton: {
-            styleOverrides: {
-                root: {
-                    textTransform: 'none',
-                    fontWeight: 600,
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                        transform: 'scale(1.02)',
-                        boxShadow: '0 6px 8px rgba(0, 0, 0, 0.15)',
-                    },
-                },
-            },
-        },
-        MuiCard: {
-            styleOverrides: {
-                root: {
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                        transform: 'translateY(-5px)',
-                        boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)',
-                    },
-                },
-            },
-        },
-    },
-});
-
 export default function App() {
     const [searchQuery, setSearchQuery] = useState('');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [imgs, setImgs] = useState<Image[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const [mode, setMode] = useState<PaletteMode>('light');
-    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-    const theme = useTheme();
 
-    const muiTheme = createTheme(getDesignTokens(mode));
-
-    useEffect(() => {
-        setMode(prefersDarkMode ? 'dark' : 'light');
-    }, [prefersDarkMode]);
-
-    const filteredImages = imgs.filter(img =>
-        img.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    const toggleTheme = () => {
-        setMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'));
-    };
+    const filteredImages = imgs.filter(img => img.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
     useEffect(() => {
         const fetchImages = async () => {
@@ -155,9 +35,7 @@ export default function App() {
                 setImgs(imgData);
                 setError(null);
             } catch (err: any) {
-                toast.error('发生了错误!', {
-                    description: err.message || '无法获取图像，请稍后再试'
-                });
+                toast.error('发生了错误!', { description: err.message || '无法获取图像，请稍后再试' });
                 setError(err.message || '无法获取图像，请稍后再试');
             } finally {
                 setLoading(false);
@@ -167,306 +45,130 @@ export default function App() {
         fetchImages();
     }, []);
 
-    const getGradientStyle = () => {
-        return mode === 'light'
-            ? 'linear-gradient(to bottom right, #e3f2fd, #f3e5f5)'
-            : 'linear-gradient(to bottom right, #0d47a1, #4a148c)';
-    };
-
-    const getButtonGradient = () => {
-        return mode === 'light'
-            ? 'linear-gradient(to right, #2196f3, #9c27b0)'
-            : 'linear-gradient(to right, #42a5f5, #ab47bc)';
-    };
-
-    const getTextGradient = () => {
-        return {
-            background: mode === 'light'
-                ? 'linear-gradient(to right, #2196f3, #9c27b0)'
-                : 'linear-gradient(to right, #42a5f5, #ab47bc)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-        };
-    };
-
     return (
-        <ThemeProvider theme={muiTheme}>
-            <CssBaseline />
-            <Box sx={{
-                minHeight: '100vh',
-                background: getGradientStyle(),
-                backgroundAttachment: 'fixed',
-                pb: 8
-            }}>
-                <AppBar position="fixed" elevation={0}>
-                    <Toolbar sx={{ justifyContent: 'space-between' }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Paper elevation={3} sx={{
-                                p: 0.5,
-                                borderRadius: '16px',
-                                background: getButtonGradient()
-                            }}>
-                                <Box
-                                    component="img"
-                                    src="/ins.webp"
-                                    alt="INS Logo"
-                                    sx={{
-                                        borderRadius: '8px',
-                                        width: 65,
-                                        height: 65,
-                                        objectFit: 'cover'
-                                    }}
-                                />
-                            </Paper>
-                            <Typography variant="h5" sx={{ pl: 2, ...getTextGradient() }}>
-                                INS HUB
-                            </Typography>
-                        </Box>
+        <div className="min-h-screen w-full bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 from-blue-50 to-purple-50">
+            <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-white/30 dark:border-gray-700/30 shadow-sm flex justify-between items-center px-4 py-2">
+                <div className="flex items-center">
+                    <div className="bg-gradient-to-r from-blue-400 to-indigo-600 p-1 rounded-xl">
+                        <img src="/ins.webp" alt="INS Logo" className="rounded-lg" width={65} />
+                    </div>
+                    <p className="text-2xl pl-3 font-bold bg-gradient-to-r from-blue-400 to-indigo-600 bg-clip-text text-transparent">
+                        INS HUB
+                    </p>
+                </div>
 
-                        <Box sx={{
-                            display: { xs: 'none', md: 'flex' },
-                            position: 'relative',
-                            width: '33%',
-                            maxWidth: '500px'
-                        }}>
-                            <SearchIcon sx={{
-                                position: 'absolute',
-                                left: 12,
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                color: 'text.secondary'
-                            }} />
-                            <InputBase
+                <div className="hidden md:flex relative w-1/3 max-w-md">
+                    <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-500 dark:text-gray-400" />
+                    <input
+                        type="text"
+                        placeholder="搜索图片..."
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.target.value)}
+                        className="dark:text-gray-400 w-full bg-white/70 dark:bg-gray-800/70 border border-gray-200 dark:border-gray-700 rounded-full py-2 px-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                </div>
+
+                <div className="flex items-center space-x-3">
+                    <ThemeModeButton />
+
+                    <a
+                        href="https://github.com/InverseSkyTeam/ins-hub/upload/master/images"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hidden md:inline-flex items-center gap-1.5 bg-gradient-to-r from-blue-400 to-indigo-500 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow hover:shadow-md transition-all hover:scale-[1.02]"
+                    >
+                        <Upload className="w-4 h-4" />
+                        上传图片
+                    </a>
+
+                    <button
+                        className="md:hidden p-2 rounded-md text-gray-700 dark:text-gray-300"
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    >
+                        {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                    </button>
+                </div>
+            </nav>
+
+            {mobileMenuOpen && (
+                <div className="fixed top-16 left-0 right-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-white/30 dark:border-gray-700/30 shadow-md md:hidden">
+                    <div className="px-4 py-4">
+                        <div className="relative mb-4">
+                            <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-500 dark:text-gray-400" />
+                            <input
+                                type="text"
                                 placeholder="搜索图片..."
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
-                                sx={{
-                                    width: '100%',
-                                    bgcolor: 'background.paper',
-                                    border: '1px solid',
-                                    borderColor: 'divider',
-                                    borderRadius: '50px',
-                                    py: 1,
-                                    px: 4,
-                                    pl: '40px',
-                                    '&:focus-within': {
-                                        borderColor: 'primary.main',
-                                        boxShadow: '0 0 0 2px rgba(63, 81, 181, 0.2)'
-                                    }
-                                }}
+                                className="w-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-full py-2 px-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
-                        </Box>
-
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <IconButton onClick={toggleTheme} color="inherit">
-                                {mode === 'dark' ? <LightIcon /> : <DarkIcon />}
-                            </IconButton>
-
-                            <Button
-                                variant="contained"
-                                startIcon={<UploadIcon />}
-                                href="https://github.com/InverseSkyTeam/ins-hub/upload/master/images"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                sx={{
-                                    display: { xs: 'none', md: 'flex' },
-                                    background: getButtonGradient(),
-                                    color: 'white'
-                                }}
-                            >
-                                上传图片
-                            </Button>
-
-                            <IconButton
-                                color="inherit"
-                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                sx={{ display: { md: 'none' } }}
-                            >
-                                {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
-                            </IconButton>
-                        </Box>
-                    </Toolbar>
-                </AppBar>
-
-                <Drawer
-                    anchor="top"
-                    open={mobileMenuOpen}
-                    onClose={() => setMobileMenuOpen(false)}
-                    sx={{
-                        '& .MuiDrawer-paper': {
-                            top: '64px',
-                            bgcolor: 'background.paper',
-                            backdropFilter: 'blur(20px)',
-                            borderBottom: '1px solid',
-                            borderColor: 'divider'
-                        }
-                    }}
-                >
-                    <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <Box sx={{ position: 'relative' }}>
-                            <SearchIcon sx={{
-                                position: 'absolute',
-                                left: 14,
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                color: 'text.secondary'
-                            }} />
-                            <InputBase
-                                placeholder="搜索图片..."
-                                value={searchQuery}
-                                onChange={e => setSearchQuery(e.target.value)}
-                                sx={{
-                                    width: '100%',
-                                    bgcolor: 'background.paper',
-                                    border: '1px solid',
-                                    borderColor: 'divider',
-                                    borderRadius: '50px',
-                                    py: 1.5,
-                                    px: 4,
-                                    pl: '40px',
-                                    '&:focus-within': {
-                                        borderColor: 'primary.main',
-                                        boxShadow: '0 0 0 2px rgba(63, 81, 181, 0.2)'
-                                    }
-                                }}
-                            />
-                        </Box>
-                        <Button
-                            variant="contained"
-                            fullWidth
-                            startIcon={<UploadIcon />}
+                        </div>
+                        <a
                             href="https://github.com/InverseSkyTeam/ins-hub/upload/master/images"
                             target="_blank"
                             rel="noopener noreferrer"
-                            sx={{
-                                background: getButtonGradient(),
-                                color: 'white'
-                            }}
+                            className="inline-flex justify-center items-center gap-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow w-full"
                         >
+                            <Upload className="w-4 h-4" />
                             上传图片
-                        </Button>
-                    </Box>
-                </Drawer>
+                        </a>
+                    </div>
+                </div>
+            )}
 
-                <Box sx={{ pt: '100px', px: { xs: 2, sm: 4, md: 6 } }}>
-                    {loading ? (
-                        <Box sx={{ textAlign: 'center', py: 10 }}>
-                            <CircularProgress
-                                size={64}
-                                thickness={2}
-                                sx={{
-                                    ...getTextGradient(),
-                                    mb: 3
-                                }}
-                            />
-                            <Typography variant="body1" color="text.secondary">
-                                正在加载图片...
-                            </Typography>
-                        </Box>
-                    ) : error ? (
-                        <Box sx={{ textAlign: 'center', py: 10 }}>
-                            <Box sx={{
-                                bgcolor: 'background.paper',
-                                border: '2px dashed',
-                                borderColor: 'divider',
-                                borderRadius: '16px',
-                                width: 64,
-                                height: 64,
-                                mx: 'auto',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
-                                <CircleXIcon color="error" fontSize="large" />
-                            </Box>
-                            <Typography variant="h6" sx={{ mt: 3, fontWeight: 600 }}>
-                                发生了一些错误! 请尝试刷新页面!
-                            </Typography>
-                            <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
-                                {error}
-                            </Typography>
-                        </Box>
-                    ) : (
-                        <>
-                            <Grid container spacing={3}>
-                                {filteredImages.map(img => (
-                                    <Grid item xs={12} sm={6} md={4} lg={3} key={img.id}>
-                                        <Card sx={{
-                                            borderRadius: '16px',
-                                            overflow: 'hidden',
-                                            cursor: 'pointer',
-                                            height: '100%',
-                                            display: 'flex',
-                                            flexDirection: 'column'
-                                        }}>
-                                            <Box sx={{
-                                                position: 'relative',
-                                                overflow: 'hidden',
-                                                aspectRatio: '2/3'
-                                            }}>
-                                                <CardMedia
-                                                    component="img"
-                                                    image={`https://ins-hub.lrsgzs.top/images/${img.name}`}
-                                                    alt={img.name.replace(/\.[^/.]+$/, '')}
-                                                    sx={{
-                                                        height: '100%',
-                                                        width: '100%',
-                                                        objectFit: 'cover',
-                                                        transition: 'transform 0.5s ease',
-                                                        '&:hover': {
-                                                            transform: 'scale(1.05)'
-                                                        }
-                                                    }}
-                                                    loading="lazy"
-                                                />
-                                            </Box>
-                                            <CardContent sx={{
-                                                bgcolor: 'background.paper',
-                                                backdropFilter: 'blur(10px)',
-                                                flexGrow: 1
-                                            }}>
-                                                <Typography
-                                                    variant="body1"
-                                                    fontWeight="medium"
-                                                    textAlign="center"
-                                                    noWrap
-                                                >
-                                                    {img.name.replace(/\.[^/.]+$/, '')}
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                    </Grid>
-                                ))}
-                            </Grid>
+            <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+                {loading ? (
+                    <div className="text-center py-20">
+                        <div className="animate-pulse bg-gradient-to-r from-blue-400 to-indigo-600 rounded-xl w-16 h-16 mx-auto mb-4"></div>
+                        <p className="text-gray-600 dark:text-gray-400">正在加载图片...</p>
+                    </div>
+                ) : error ? (
+                    <div className="text-center py-20">
+                        <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto flex items-center justify-center">
+                            <CircleX className="h-8 w-8 text-red-500" />
+                        </div>
+                        <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-white">
+                            发生了一些错误! 请尝试刷新页面!
+                        </h3>
+                        <p className="mt-2 text-gray-600 dark:text-gray-400">{error}</p>
+                    </div>
+                ) : (
+                    <>
+                        <div className="w-full columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-4 p-4">
+                            {filteredImages.map((img) => (
+                                <div
+                                    key={img.id}
+                                    className="mb-4 break-inside-avoid cursor-pointer rounded-xl overflow-hidden shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl"
+                                >
+                                    <img
+                                        src={`https://ins-hub.lrsgzs.top/images/${img.name}`} // 换成可访问地址
+                                        alt={img.name.replace(/\.[^/.]+$/, '')}
+                                        className="w-full h-auto block"
+                                        loading="lazy"
+                                    />
+                                    <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-3">
+                                        <p className="text-gray-800 dark:text-gray-200 font-medium text-center truncate">
+                                            {img.name.replace(/\.[^/.]+$/, '')}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
 
-                            {filteredImages.length === 0 && (
-                                <Box sx={{ textAlign: 'center', py: 10 }}>
-                                    <Box sx={{
-                                        bgcolor: 'background.paper',
-                                        border: '2px dashed',
-                                        borderColor: 'divider',
-                                        borderRadius: '16px',
-                                        width: 64,
-                                        height: 64,
-                                        mx: 'auto',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center'
-                                    }}>
-                                        <SearchIcon color="disabled" fontSize="large" />
-                                    </Box>
-                                    <Typography variant="h6" sx={{ mt: 3, fontWeight: 600 }}>
-                                        未找到匹配的图片
-                                    </Typography>
-                                    <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
-                                        尝试其他搜索关键词或上传新图片
-                                    </Typography>
-                                </Box>
-                            )}
-                        </>
-                    )}
-                </Box>
-            </Box>
-        </ThemeProvider>
+                        {filteredImages.length === 0 && (
+                            <div className="text-center py-20">
+                                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto flex items-center justify-center">
+                                    <Search className="h-8 w-8 text-gray-500" />
+                                </div>
+                                <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-white">
+                                    未找到匹配的图片
+                                </h3>
+                                <p className="mt-2 text-gray-600 dark:text-gray-400">尝试其他搜索关键词或上传新图片</p>
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
+        </div>
     );
 }
