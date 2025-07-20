@@ -15,9 +15,7 @@ export default function App() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
-    const filteredImages = imgs.filter(img =>
-        img.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredImages = imgs.filter(img => img.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
     useEffect(() => {
         const fetchImages = async () => {
@@ -27,12 +25,12 @@ export default function App() {
 
                 if (!res.ok) throw new Error(data.message || '无法获取图像，请稍后再试');
 
-                const imgData = data.filter((item: any) =>
-                    item.name !== 'output.webp' && item.type === 'file'
-                ).map((item: any, index: number) => ({
-                    id: index,
-                    name: item.name
-                }));
+                const imgData = data
+                    .filter((item: any) => item.name !== 'output.webp' && item.type === 'file')
+                    .map((item: any, index: number) => ({
+                        id: index,
+                        name: item.name,
+                    }));
 
                 setImgs(imgData);
                 setError(null);
@@ -48,7 +46,7 @@ export default function App() {
     }, []);
 
     return (
-        <div className="min-h-screen w-full bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 from-blue-50 to-purple-50 to-indigo-50">
+        <div className="min-h-screen w-full bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 from-blue-50 to-purple-50">
             <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-white/30 dark:border-gray-700/30 shadow-sm flex justify-between items-center px-4 py-2">
                 <div className="flex items-center">
                     <div className="bg-gradient-to-r from-blue-400 to-indigo-600 p-1 rounded-xl">
@@ -145,7 +143,7 @@ export default function App() {
                                     <div className="aspect-[2/3] relative">
                                         <img
                                             src={`https://ins-hub.lrsgzs.top/images/${img.name}`}
-                                            alt={img.name.replace(/\.[^/.]+$/, "")}
+                                            alt={img.name.replace(/\.[^/.]+$/, '')}
                                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                             loading="lazy"
                                         />
@@ -153,7 +151,7 @@ export default function App() {
 
                                     <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-3">
                                         <p className="text-gray-800 dark:text-gray-200 font-medium text-center truncate">
-                                            {img.name.replace(/\.[^/.]+$/, "")}
+                                            {img.name.replace(/\.[^/.]+$/, '')}
                                         </p>
                                     </div>
                                 </div>
@@ -165,7 +163,9 @@ export default function App() {
                                 <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto flex items-center justify-center">
                                     <Search className="h-8 w-8 text-gray-500" />
                                 </div>
-                                <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-white">未找到匹配的图片</h3>
+                                <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-white">
+                                    未找到匹配的图片
+                                </h3>
                                 <p className="mt-2 text-gray-600 dark:text-gray-400">尝试其他搜索关键词或上传新图片</p>
                             </div>
                         )}
