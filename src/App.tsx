@@ -111,7 +111,7 @@ export default function App() {
                             key={img.id}
                             className="group relative cursor-pointer rounded-xl overflow-hidden shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl"
                         >
-                            <div className="aspect-[4/3] relative">
+                            <div className="aspect-[2/3] relative">
                                 <img
                                     src={`http://ins-hub.lrsgzs.top/images/${img.name}`}
                                     alt={img.name.replace(/\.(jpg|jpeg|png|gif|webp|svg)$/i, '')}
