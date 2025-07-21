@@ -24,20 +24,20 @@ export default function ThemeModeButton() {
     const iconColor = isDark ? 'text-yellow-500' : 'text-blue-500';
 
     const enableTransitions = () =>
-        "startViewTransition" in document &&
-        window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
+        'startViewTransition' in document &&
+        window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
 
     async function toggleDark({ clientX: x, clientY: y }: MouseEvent) {
         const isDark = document.documentElement.classList.contains('dark');
 
         if (!enableTransitions()) {
-            setIsDark(!isDark)
+            setIsDark(!isDark);
             return;
         }
 
         const endRadius = Math.hypot(
             Math.max(x, window.innerWidth - x),
-            Math.max(y, window.innerHeight - y),
+            Math.max(y, window.innerHeight - y)
         );
 
         const clipPath = [
@@ -46,7 +46,7 @@ export default function ThemeModeButton() {
         ];
 
         await document.startViewTransition(() => {
-            setIsDark(!isDark)
+            setIsDark(!isDark);
         }).ready;
 
         document.documentElement.animate(
@@ -55,11 +55,11 @@ export default function ThemeModeButton() {
             },
             {
                 duration: 700,
-                easing: "ease-in",
+                easing: 'ease-in',
                 pseudoElement: isDark
-                    ? "::view-transition-new(root)"
-                    : "::view-transition-old(root)",
-            },
+                    ? '::view-transition-new(root)'
+                    : '::view-transition-old(root)',
+            }
         );
     }
 
