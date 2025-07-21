@@ -367,7 +367,7 @@ export default function App() {
 
                         <div className="p-4">
                             <img
-                                src={selectedImage.download_url}
+                                src={`http://ins-hub.lrsgzs.top/images/${selectedImage.name}`}
                                 alt={selectedImage.name}
                                 className="w-full rounded-lg shadow-lg"
                             />
