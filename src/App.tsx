@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import ThemeModeButton from '@/components/ThemeModeButton.tsx';
-import { Upload, Search, Menu, X, CircleX, Clock, Flame } from 'lucide-react';
+import { Upload, Search, Menu, X, CircleX } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Image {
@@ -8,8 +8,6 @@ interface Image {
     name: string;
     path: string;
     download_url: string;
-    timestamp: string;
-    tags: string[];
 }
 
 export default function App() {
@@ -18,26 +16,9 @@ export default function App() {
     const [images, setImages] = useState<Image[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const [activeTag, setActiveTag] = useState<string>('all');
-    const [timeFilter, setTimeFilter] = useState<'all' | 'week' | 'month'>('all');
     const [selectedImage, setSelectedImage] = useState<Image | null>(null);
 
-    const parseTags = (name: string): string[] => {
-        const matches = name.match(/\[(.*?)\]/g);
-        if (!matches) return [];
-        return matches.map((tag) => tag.replace(/[\[\]]/g, ''));
-    };
-
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('zh-CN', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    };
+    const filteredImages = images.filter(img => img.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const fetchImages = useCallback(async () => {
         try {
@@ -50,20 +31,13 @@ export default function App() {
             if (!res.ok) throw new Error(data.message || '无法获取图像，请稍后再试');
 
             const imgData = data
-                .filter((item: Image) => item.name !== 'output.webp' && item.type === 'file')
+                .filter((item: Image) => item.name !== 'output.webp')
                 .map((item: Image) => {
-                    const randomDaysAgo = Math.floor(Math.random() * 30) + 1;
-                    const randomDate = new Date(
-                        Date.now() - randomDaysAgo * 24 * 60 * 60 * 1000
-                    ).toISOString();
-
                     return {
-                        id: item.sha,
+                        id: item.id,
                         name: item.name,
                         path: item.path,
                         download_url: item.download_url,
-                        timestamp: randomDate,
-                        tags: parseTags(item.name),
                     };
                 });
 
@@ -84,33 +58,6 @@ export default function App() {
     useEffect(() => {
         fetchImages();
     }, [fetchImages]);
-
-    const filteredImages = images.filter((img) => {
-        const matchesSearch = img.name.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesTag = activeTag === 'all' || img.tags.includes(activeTag);
-
-        const now = new Date();
-        const imgDate = new Date(img.timestamp);
-        let matchesTime = true;
-
-        if (timeFilter === 'week') {
-            const lastWeek = new Date(now.setDate(now.getDate() - 7));
-            matchesTime = imgDate > lastWeek;
-        } else if (timeFilter === 'month') {
-            const lastMonth = new Date(now.setMonth(now.getMonth() - 1));
-            matchesTime = imgDate > lastMonth;
-        }
-
-        return matchesSearch && matchesTag && matchesTime;
-    });
-
-    const sortedImages = [...filteredImages].sort(
-        (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    );
-
-    const allTags = Array.from(new Set(images.flatMap((img) => img.tags))).filter(
-        (tag) => tag
-    ) as any[];
 
     return (
         <div className="min-h-screen w-full bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 from-blue-50 to-purple-50">
@@ -177,27 +124,6 @@ export default function App() {
                             />
                         </div>
 
-                        <div className="flex gap-2 mb-3">
-                            <button
-                                onClick={() => setTimeFilter('all')}
-                                className={`flex-1 py-2 text-sm rounded-lg ${timeFilter === 'all' ? 'bg-indigo-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
-                            >
-                                全部时间
-                            </button>
-                            <button
-                                onClick={() => setTimeFilter('week')}
-                                className={`flex-1 py-2 text-sm rounded-lg ${timeFilter === 'week' ? 'bg-indigo-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
-                            >
-                                本周
-                            </button>
-                            <button
-                                onClick={() => setTimeFilter('month')}
-                                className={`flex-1 py-2 text-sm rounded-lg ${timeFilter === 'month' ? 'bg-indigo-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
-                            >
-                                本月
-                            </button>
-                        </div>
-
                         <a
                             href="https://github.com/InverseSkyTeam/ins-hub/upload/master/images"
                             target="_blank"
@@ -215,52 +141,6 @@ export default function App() {
                 {!loading && !error && (
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div className="flex flex-wrap gap-2">
-                            {allTags.map((tag) => (
-                                <button
-                                    key={tag}
-                                    onClick={() => setActiveTag(tag)}
-                                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-                                        activeTag === tag
-                                            ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-md'
-                                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-                                    }`}
-                                >
-                                    {tag}
-                                </button>
-                            ))}
-                        </div>
-
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => setTimeFilter('all')}
-                                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium dark:text-white  ${
-                                    timeFilter === 'all'
-                                        ? 'bg-gradient-to-r from-green-500 to-teal-600 text-white'
-                                        : 'bg-gray-200 dark:bg-gray-700'
-                                }`}
-                            >
-                                <Clock className="w-4 h-4" /> 全部时间
-                            </button>
-                            <button
-                                onClick={() => setTimeFilter('week')}
-                                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium dark:text-white ${
-                                    timeFilter === 'week'
-                                        ? 'bg-gradient-to-r from-orange-500 to-amber-600 text-white'
-                                        : 'bg-gray-200 dark:bg-gray-700'
-                                }`}
-                            >
-                                <Flame className="w-4 h-4" /> 本周
-                            </button>
-                            <button
-                                onClick={() => setTimeFilter('month')}
-                                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium dark:text-white ${
-                                    timeFilter === 'month'
-                                        ? 'bg-gradient-to-r from-red-500 to-pink-600 text-white'
-                                        : 'bg-gray-200 dark:bg-gray-700'
-                                }`}
-                            >
-                                <Flame className="w-4 h-4" /> 本月
-                            </button>
                         </div>
                     </div>
                 )}
@@ -289,7 +169,7 @@ export default function App() {
                 ) : (
                     <>
                         <div className="w-full columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
-                            {sortedImages.map((img) => {
+                            {filteredImages.map((img) => {
                                 return (
                                     <div
                                         key={img.id}
@@ -303,46 +183,27 @@ export default function App() {
                                                 className="w-full h-auto block"
                                                 loading="lazy"
                                             />
-
-                                            {img.tags.length > 0 && (
-                                                <div className="absolute top-2 right-2 flex flex-wrap gap-1">
-                                                    {img.tags.slice(0, 2).map((tag) => (
-                                                        <span
-                                                            key={tag}
-                                                            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs px-2 py-1 rounded-full shadow"
-                                                        >
-                                                            {tag}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            )}
                                         </div>
 
                                         <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-3">
                                             <p className="text-gray-800 dark:text-gray-200 font-medium text-center truncate mb-1">
                                                 {img.name.replace(/\.[^/.]+$/, '')}
                                             </p>
-
-                                            <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
-                                                <span>{formatDate(img.timestamp)}</span>
-                                            </div>
                                         </div>
                                     </div>
                                 );
                             })}
                         </div>
 
-                        {sortedImages.length === 0 && (
+                        {filteredImages.length === 0 && (
                             <div className="text-center py-20">
                                 <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto flex items-center justify-center">
                                     <Search className="h-8 w-8 text-gray-500" />
                                 </div>
                                 <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-white">
-                                    未找到匹配的发言
+                                    未找到匹配的图片
                                 </h3>
-                                <p className="mt-2 text-gray-600 dark:text-gray-400">
-                                    尝试其他搜索关键词或上传新内容
-                                </p>
+                                <p className="mt-2 text-gray-600 dark:text-gray-400">尝试其他搜索关键词或上传新图片</p>
                             </div>
                         )}
                     </>
@@ -376,24 +237,6 @@ export default function App() {
                                 <h2 className="text-xl font-bold text-gray-800 dark:text-white">
                                     {selectedImage.name.replace(/\.[^/.]+$/, '')}
                                 </h2>
-
-                                <div className="flex flex-wrap gap-2 mt-2">
-                                    {selectedImage.tags.map((tag) => (
-                                        <span
-                                            key={tag}
-                                            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm px-3 py-1 rounded-full"
-                                        >
-                                            {tag}
-                                        </span>
-                                    ))}
-                                </div>
-
-                                <div className="mt-4 text-sm text-gray-600 dark:text-gray-300">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Clock className="w-4 h-4" />
-                                        <span>上传时间: {formatDate(selectedImage.timestamp)}</span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
