@@ -300,7 +300,7 @@ export default function App() {
                                             <img
                                                 src={`http://ins-hub.lrsgzs.top/images/${img.name}`}
                                                 alt={img.name.replace(/\.[^/.]+$/, '')}
-                                                className="block"
+                                                className="w-full h-auto block"
                                                 loading="lazy"
                                             />
 
