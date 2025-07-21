@@ -13,7 +13,6 @@ let plugins = [
             {
                 from: "images",
                 to: "images",
-                
             }
         ]
     }),

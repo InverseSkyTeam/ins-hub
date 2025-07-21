@@ -1,15 +1,5 @@
 @import "tailwindcss/index.css";
 
-body {
-    /* background: linear-gradient(
-        to right bottom,
-        rgba(20, 20, 40, 0.95),
-        rgba(34, 40, 60, 0.95),
-        rgba(44, 62, 80, 0.95)
-    ); */
-    background-image: url("https://livefile.xesimg.com/programme/python_assets/8de0c0221910b2dbb58375998b024329.jpg") !important;
-}
-
 ::-webkit-scrollbar {
     width: 8px;
 }
