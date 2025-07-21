@@ -18,7 +18,9 @@ export default function App() {
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState<Image | null>(null);
 
-    const filteredImages = images.filter(img => img.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    const filteredImages = images.filter((img) =>
+        img.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const fetchImages = useCallback(async () => {
         try {
@@ -43,13 +45,17 @@ export default function App() {
 
             setImages(imgData);
             setError(null);
-        } catch (err: any) {
+        } catch (err: unknown) {
+            let message: string = '无法获取图像，请稍后再试';
+            if (err instanceof Error) {
+                message = err.message || '无法获取图像，请稍后再试';
+            }
             toast.error('发生了错误!', {
-                description: err.message || '无法获取图像，请稍后再试',
+                description: message,
                 position: 'top-center',
                 duration: 3000,
             });
-            setError(err.message || '无法获取图像，请稍后再试');
+            setError(message);
         } finally {
             setLoading(false);
         }
@@ -140,8 +146,7 @@ export default function App() {
             <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
                 {!loading && !error && (
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                        <div className="flex flex-wrap gap-2">
-                        </div>
+                        <div className="flex flex-wrap gap-2"></div>
                     </div>
                 )}
 
@@ -203,7 +208,9 @@ export default function App() {
                                 <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-white">
                                     未找到匹配的图片
                                 </h3>
-                                <p className="mt-2 text-gray-600 dark:text-gray-400">尝试其他搜索关键词或上传新图片</p>
+                                <p className="mt-2 text-gray-600 dark:text-gray-400">
+                                    尝试其他搜索关键词或上传新图片
+                                </p>
                             </div>
                         )}
                     </>
