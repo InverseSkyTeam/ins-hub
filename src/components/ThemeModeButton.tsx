@@ -15,8 +15,10 @@ export default function ThemeModeButton() {
 
         if (isDark) {
             document.documentElement.classList.add('dark');
+            document.documentElement.setAttribute('data-theme', 'dark');
         } else {
             document.documentElement.classList.remove('dark');
+            document.documentElement.setAttribute('data-theme', 'light');
         }
     }, [isDark]);
 
@@ -64,7 +66,7 @@ export default function ThemeModeButton() {
     }
 
     return (
-        <button onClick={toggleDark} aria-label={isDark ? '切换到亮色模式' : '切换到暗色模式'}>
+        <button onClick={(e) => toggleDark(e as unknown as MouseEvent)}>
             <Icon className={iconColor} size={35} />
         </button>
     );
