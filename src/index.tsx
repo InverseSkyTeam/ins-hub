@@ -148,7 +148,7 @@ const App = () => {
                 if (!res.ok) throw new Error(data.message || '无法获取图像，请稍后再试');
 
                 const imgData = data
-                    .filter((item: any) => item.name !== 'output.webp' && item.type === 'file')
+                    .filter((item: any) => item.name !== 'ins.webp' && item.type === 'file')
                     .map((item: any, index: number) => ({
                         id: index,
                         name: item.name,
