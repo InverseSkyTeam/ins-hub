@@ -6,18 +6,24 @@ import ImageModal from '@/components/ImageModal.tsx';
 import { CircleX, Menu, Upload, X, Search } from 'lucide-react';
 import { useImages } from '@/hooks/useImages';
 
-
 export default function App() {
     const [searchQuery, setSearchQuery] = useState('');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [selectedImage, setSelectedImage] = useState(null);
-    
+    const [selectedImage, setSelectedImage] = useState<{
+        id: string;
+        name: string;
+        path: string;
+        download_url: string;
+    } | null>(null);
+
     const { images, loading, error, refetch } = useImages();
 
     const filteredImages = images.filter((img) =>
-        img.name.toLowerCase().replace(/\s+/g, '').includes(searchQuery.toLowerCase().replace(/\s+/g, ''))
+        img.name
+            .toLowerCase()
+            .replace(/\s+/g, '')
+            .includes(searchQuery.toLowerCase().replace(/\s+/g, ''))
     );
-
 
     return (
         <div className="min-h-screen w-full bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 from-blue-50 to-purple-50">
@@ -45,13 +51,7 @@ export default function App() {
                     </div>
                 </div>
 
-                <div className="navbar-center">
-                    <SearchInput
-                        value={searchQuery}
-                        onChange={setSearchQuery}
-                        className="hidden md:flex w-full max-w-md"
-                    />
-                </div>
+                <SearchInput value={searchQuery} onChange={setSearchQuery} />
 
                 <div className="navbar-end flex items-center space-x-3">
                     <ThemeModeButton />
@@ -81,7 +81,6 @@ export default function App() {
                         <SearchInput
                             value={searchQuery}
                             onChange={setSearchQuery}
-                            className="mb-4"
                         />
 
                         <a
@@ -118,10 +117,7 @@ export default function App() {
                             发生了一些错误! 请尝试刷新页面!
                         </h3>
                         <p className="mt-2 text-gray-600 dark:text-gray-400">{error}</p>
-                        <button
-                            onClick={refetch}
-                            className="btn btn-primary mt-4"
-                        >
+                        <button onClick={refetch} className="btn btn-primary mt-4">
                             重新加载
                         </button>
                     </div>
@@ -154,15 +150,13 @@ export default function App() {
                 )}
             </div>
 
-            <ImageModal
-                image={selectedImage}
-                onClose={() => setSelectedImage(null)}
-            />
+            <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />
 
             {!error && !loading && filteredImages.length > 0 && (
-            <footer className="py-6 text-center text-gray-600 dark:text-gray-400 text-sm">
-                <p className="mt-1">共收录 {images.length} 条逆天发言</p>
-            </footer>)}
+                <footer className="py-6 text-center text-gray-600 dark:text-gray-400 text-sm">
+                    <p className="mt-1">共收录 {images.length} 条逆天发言</p>
+                </footer>
+            )}
         </div>
     );
 }
