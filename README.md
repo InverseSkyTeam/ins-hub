@@ -1,3 +1,3 @@
 # INS Hub
 
-INS HUB的Vite版本
+收录逆天群里的逆天发言
