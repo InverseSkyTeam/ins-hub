@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ThemeModeButton from '@/components/ThemeModeButton.tsx';
-import { Upload, Search, Menu, X, CircleX } from 'lucide-react';
+import { CircleX, Menu, Search, Upload, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Image {
@@ -33,7 +33,7 @@ export default function App() {
             if (!res.ok) throw new Error(data.message || '无法获取图像，请稍后再试');
 
             const imgData = data
-                .filter((item: Image) => item.name !== 'output.webp')
+                .filter((item: Image) => item.name !== 'ins.webp')
                 .map((item: Image) => {
                     return {
                         id: item.name,
@@ -91,6 +91,7 @@ export default function App() {
 
                 <div className="hidden md:flex relative w-1/3 max-w-md h-12">
                     <Search className="absolute left-3 top-3.5 h-5 w-5 text-gray-500 dark:text-gray-400" />
+
                     <input
                         type="text"
                         placeholder="搜索逆天发言..."
@@ -107,7 +108,7 @@ export default function App() {
                         href="https://github.com/InverseSkyTeam/ins-hub/upload/master/images"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hidden md:inline-flex items-center gap-1.5 bg-gradient-to-r from-blue-400 to-indigo-500 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow hover:shadow-md transition-all hover:scale-[1.02]"
+                        className="hidden md:inline-flex btn bg-gradient-to-r from-blue-400 to-indigo-500 rounded-xl text-white"
                     >
                         <Upload className="w-4 h-4" />
                         上传发言
@@ -132,7 +133,7 @@ export default function App() {
                                 placeholder="搜索逆天发言..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-full py-2 px-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full bg-white/80 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 rounded-full py-2 px-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
                         </div>
 
@@ -140,7 +141,7 @@ export default function App() {
                             href="https://github.com/InverseSkyTeam/ins-hub/upload/master/images"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex justify-center items-center gap-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow w-full"
+                            className="inline-flex btn bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold px-4 py-2 rounded-xl w-full"
                         >
                             <Upload className="w-4 h-4" />
                             上传新发言
@@ -256,9 +257,10 @@ export default function App() {
                 </div>
             )}
 
+            {!error && !loading && filteredImages.length > 0 && (
             <footer className="py-6 text-center text-gray-600 dark:text-gray-400 text-sm">
                 <p className="mt-1">共收录 {images.length} 条逆天发言</p>
-            </footer>
+            </footer>)}
         </div>
     );
 }
