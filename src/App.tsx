@@ -15,7 +15,7 @@ export default function App() {
     const { images, loading, error, refetch } = useImages();
 
     const filteredImages = images.filter((img) =>
-        img.name.toLowerCase().includes(searchQuery.toLowerCase())
+        img.name.toLowerCase().replace(/\s+/g, '').includes(searchQuery.toLowerCase().replace(/\s+/g, ''))
     );
 
 
