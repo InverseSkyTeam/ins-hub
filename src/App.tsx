@@ -40,9 +40,10 @@ export default function App() {
                             <img
                                 src="/ins.webp"
                                 alt="INS Logo"
-                                className="rounded-lg"
+                                className="rounded-lg z-999999 logo-animation"
                                 width={65}
                                 height={65}
+                                style={{ viewTransitionName: 'none' }}
                             />
                         </div>
                         <p className="text-2xl pl-3 font-bold bg-gradient-to-r from-blue-400 to-indigo-600 bg-clip-text text-transparent">

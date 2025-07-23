@@ -21,3 +21,7 @@
 .dark::view-transition-old(root) {
     z-index: 9999;
 }
+
+.logo-animation {
+    cview-transition-name: none;
+}
