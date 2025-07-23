@@ -56,7 +56,7 @@ export default function ThemeModeButton() {
                 clipPath: isDark ? clipPath : [...clipPath].reverse(),
             },
             {
-                duration: 700,
+                duration: 250,
                 easing: 'ease-in',
                 pseudoElement: isDark
                     ? '::view-transition-new(root)'
