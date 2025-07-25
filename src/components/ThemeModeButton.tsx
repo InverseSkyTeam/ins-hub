@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import * as React from 'react';
 import { MoonStar, SunIcon } from 'lucide-react';
 
 export default function ThemeModeButton() {
-    const [isDark, setIsDark] = useState(() => {
+    const [isDark, setIsDark] = React.useState(() => {
         const saved = localStorage.getItem('dark');
         if (saved !== null) {
             return saved === 'true';
@@ -10,7 +10,7 @@ export default function ThemeModeButton() {
         return window.matchMedia('(prefers-color-scheme: dark)').matches;
     });
 
-    useEffect(() => {
+    React.useEffect(() => {
         localStorage.setItem('dark', isDark.toString());
 
         if (isDark) {

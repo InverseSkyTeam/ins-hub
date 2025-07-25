@@ -33,7 +33,7 @@ export default function ImageModal({ image, onClose }: ImageModalProps) {
 
                 <div className="p-4">
                     <img
-                        src={`http://ins-hub.lrsgzs.top/images/${image.name}`}
+                        src={`./images/${image.name}`}
                         alt={image.name}
                         className="w-full rounded-lg shadow-lg"
                     />

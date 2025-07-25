@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import * as React from 'react';
 
 interface Image {
     id: string;
@@ -20,7 +20,7 @@ function ImageCard({ image, onClick }: ImageCardProps) {
         >
             <figure>
                 <img
-                    src={`http://ins-hub.lrsgzs.top/images/${image.name}`}
+                    src={`./images/${image.name}`}
                     alt={image.name.replace(/\.[^/.]+$/, '')}
                     className="w-full h-auto"
                     loading="lazy"
@@ -35,4 +35,4 @@ function ImageCard({ image, onClick }: ImageCardProps) {
     );
 }
 
-export default memo(ImageCard);
+export default React.memo(ImageCard);
