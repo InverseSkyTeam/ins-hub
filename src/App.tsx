@@ -57,7 +57,7 @@ export default function App() {
                     <ThemeModeButton />
 
                     <a
-                        href="https://github.com/InverseSkyTeam/ins-hub/upload/master/images"
+                        href="https://github.com/InverseSkyTeam/ins-hub/upload/master/public/images"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hidden md:inline-flex btn btn-primary gap-2"
