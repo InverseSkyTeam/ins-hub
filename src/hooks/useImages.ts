@@ -17,7 +17,7 @@ export function useImages() {
         try {
             setLoading(true);
             const res = await fetch(
-                'https://api.github.com/repos/InverseSkyTeam/ins-hub/contents/images'
+                'https://api.github.com/repos/InverseSkyTeam/ins-hub/contents/public/images'
             );
             const data = await res.json();
 
