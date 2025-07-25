@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import * as React from 'react';
 import { toast } from 'sonner';
 
 interface Image {
@@ -9,15 +9,15 @@ interface Image {
 }
 
 export function useImages() {
-    const [images, setImages] = useState<Image[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [images, setImages] = React.useState<Image[]>([]);
+    const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState<string | null>(null);
 
-    const fetchImages = useCallback(async () => {
+    const fetchImages = React.useCallback(async () => {
         try {
             setLoading(true);
             const res = await fetch(
-                'https://api.github.com/repos/InverseSkyTeam/ins-hub/contents/images'
+                'https://api.github.com/repos/InverseSkyTeam/ins-hub/contents/public/images'
             );
             const data = await res.json();
 
@@ -50,7 +50,7 @@ export function useImages() {
         }
     }, []);
 
-    useEffect(() => {
+    React.useEffect(() => {
         fetchImages();
     }, [fetchImages]);
 

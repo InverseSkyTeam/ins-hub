@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import * as React from 'react';
 import ThemeModeButton from '@/components/ThemeModeButton.tsx';
 import SearchInput from '@/components/SearchInput.tsx';
 import ImageCard from '@/components/ImageCard.tsx';
@@ -7,9 +7,9 @@ import { CircleX, Menu, Upload, X, Search } from 'lucide-react';
 import { useImages } from '@/hooks/useImages';
 
 export default function App() {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [selectedImage, setSelectedImage] = useState<{
+    const [searchQuery, setSearchQuery] = React.useState('');
+    const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+    const [selectedImage, setSelectedImage] = React.useState<{
         id: string;
         name: string;
         path: string;
@@ -27,7 +27,7 @@ export default function App() {
 
     return (
         <div className="min-h-screen w-full bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 from-blue-50 to-purple-50">
-            <div className="fixed inset-0 overflow-hidden z-0">
+            <div className="fixed inset-0 overflow-hidden z-0 pointer-events-none">
                 <div className="absolute top-1/4 -left-10 w-96 h-96 bg-purple-300 dark:bg-purple-900/40 rounded-full filter blur-[100px] opacity-30"></div>
                 <div className="absolute bottom-1/3 right-0 w-64 h-64 bg-indigo-300 dark:bg-indigo-900/40 rounded-full filter blur-[100px] opacity-30"></div>
                 <div className="absolute top-1/3 right-1/4 w-40 h-40 bg-blue-300 dark:bg-blue-900/40 rounded-full filter blur-[100px] opacity-30"></div>
@@ -35,7 +35,7 @@ export default function App() {
 
             <nav className="navbar fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-white/30 dark:border-gray-700/30 shadow-sm px-4">
                 <div className="navbar-start">
-                    <div className="flex items-center">
+                    <div className="flex items-center select-none">
                         <div className="bg-gradient-to-r from-blue-400 to-indigo-600 p-1 rounded-xl">
                             <img
                                 src="/ins.webp"
@@ -57,7 +57,7 @@ export default function App() {
                     <ThemeModeButton />
 
                     <a
-                        href="https://github.com/InverseSkyTeam/ins-hub/upload/master/images"
+                        href="https://github.com/InverseSkyTeam/ins-hub/upload/master/public/images"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hidden md:inline-flex btn btn-primary gap-2"
@@ -84,7 +84,7 @@ export default function App() {
                         />
 
                         <a
-                            href="https://github.com/InverseSkyTeam/ins-hub/upload/master/images"
+                            href="https://github.com/InverseSkyTeam/ins-hub/upload/master/public/images"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="btn btn-primary gap-2 w-full"
