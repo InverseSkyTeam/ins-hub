@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 import ThemeModeButton from '@/components/ThemeModeButton.tsx';
 import SearchInput from '@/components/SearchInput.tsx';
 import ImageCard from '@/components/ImageCard.tsx';
@@ -7,9 +7,9 @@ import { CircleX, Menu, Upload, X, Search } from 'lucide-react';
 import { useImages } from '@/hooks/useImages';
 
 export default function App() {
-    const [searchQuery, setSearchQuery] = React.useState('');
-    const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
-    const [selectedImage, setSelectedImage] = React.useState<{
+    const [searchQuery, setSearchQuery] = useState('');
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<{
         id: string;
         name: string;
         path: string;
@@ -20,6 +20,7 @@ export default function App() {
 
     const filteredImages = images.filter((img) =>
         img.name
+            .replace(/\.[^/.]+$/, '')
             .toLowerCase()
             .replace(/\s+/g, '')
             .includes(searchQuery.toLowerCase().replace(/\s+/g, ''))
@@ -78,10 +79,7 @@ export default function App() {
             {mobileMenuOpen && (
                 <div className="fixed top-16 left-0 right-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-white/30 dark:border-gray-700/30 shadow-md md:hidden">
                     <div className="px-4 py-4">
-                        <SearchInput
-                            value={searchQuery}
-                            onChange={setSearchQuery}
-                        />
+                        <SearchInput value={searchQuery} onChange={setSearchQuery} />
 
                         <a
                             href="https://github.com/InverseSkyTeam/ins-hub/upload/master/public/images"

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { memo } from 'react';
 
 interface Image {
     id: string;
@@ -35,4 +35,4 @@ function ImageCard({ image, onClick }: ImageCardProps) {
     );
 }
 
-export default React.memo(ImageCard);
+export default memo(ImageCard);
