@@ -66,8 +66,11 @@ export default function ThemeModeButton() {
     }
 
     return (
-        <button onClick={(e) => toggleDark(e as unknown as MouseEvent)}>
-            <Icon className={iconColor} size={35} />
+        <button 
+            onClick={(e) => toggleDark(e as unknown as MouseEvent)}
+            className="p-2 rounded-full transition-all duration-300 hover:bg-gray-200 dark:hover:bg-gray-800 hover:scale-110"
+        >
+            <Icon className={iconColor} size={28} />
         </button>
     );
 }
