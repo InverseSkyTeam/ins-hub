@@ -1,16 +1,6 @@
 import { X } from 'lucide-react';
 
-interface Image {
-    id: string;
-    name: string;
-    path: string;
-    download_url: string;
-}
-
-interface ImageModalProps {
-    image: Image | null;
-    onClose: () => void;
-}
+import type { ImageModalProps } from '@/interfaces/image';
 
 export default function ImageModal({ image, onClose }: ImageModalProps) {
     if (!image) return null;

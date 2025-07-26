@@ -1,12 +1,7 @@
 import * as React from 'react';
 import { toast } from 'sonner';
 
-interface Image {
-    id: string;
-    name: string;
-    path: string;
-    download_url: string;
-}
+import type { Image } from '@/interfaces/image';
 
 export function useImages() {
     const [images, setImages] = React.useState<Image[]>([]);

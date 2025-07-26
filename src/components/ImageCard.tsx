@@ -1,16 +1,6 @@
 import { memo } from 'react';
 
-interface Image {
-    id: string;
-    name: string;
-    path: string;
-    download_url: string;
-}
-
-interface ImageCardProps {
-    image: Image;
-    onClick: () => void;
-}
+import type { ImageCardProps } from '@/interfaces/image';
 
 function ImageCard({ image, onClick }: ImageCardProps) {
     return (
