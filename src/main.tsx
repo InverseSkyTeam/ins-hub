@@ -1,12 +1,21 @@
-import * as React from 'react';
-import { createRoot } from 'react-dom/client';
-import '@/styles/index.css';
-import App from '@/App.tsx';
-import { Toaster } from 'sonner';
+import { hydrate, prerender as preactPrerender } from 'preact-iso';
 
-createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
+import { StrictMode } from 'react';
+import App from '@/App';
+import { Toaster } from 'sonner';
+import '@/styles/index.css';
+
+const Root = () => (
+    <StrictMode>
         <App />
         <Toaster richColors position="top-center" />
-    </React.StrictMode>
+    </StrictMode>
 );
+
+if (typeof window !== 'undefined') {
+    hydrate(<Root />, document.getElementById('root'));
+}
+
+export async function ssrPrerender(data: any) {
+    return await preactPrerender(<Root {...data} />);
+}

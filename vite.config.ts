@@ -1,14 +1,15 @@
 import { defineConfig } from 'vite';
-import { fileURLToPath, URL } from 'node:url';
-import react from '@vitejs/plugin-react-oxc';
+import preact from '@preact/preset-vite';
+import { resolve } from 'path';
 import tailwindcss from '@tailwindcss/vite';
 
-// https://vite.dev/config/
 export default defineConfig({
-    plugins: [react(), tailwindcss()],
+    plugins: [preact(), tailwindcss()],
     resolve: {
         alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url)),
+            react: 'preact/compat',
+            'react-dom': 'preact/compat',
+            '@': resolve(__dirname, './src'),
         },
     },
 });
