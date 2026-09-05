@@ -4,7 +4,18 @@ import type { ListBlobResultBlob } from '@vercel/blob';
 
 export const config = { runtime: 'nodejs' };
 
-const redis = Redis.fromEnv();
+function redisFromEnv() {
+    const url = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
+    if (!url || !token) {
+        throw new Error(
+            '缺少 Redis 环境变量（UPSTASH_REDIS_REST_URL/TOKEN 或 KV_REST_API_URL/TOKEN）。'
+        );
+    }
+    return new Redis({ url, token });
+}
+
+const redis = redisFromEnv();
 
 const IMAGES_ZSET = 'inshub:images';
 const META_PREFIX = 'inshub:meta:';
