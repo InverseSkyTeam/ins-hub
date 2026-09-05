@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button.tsx';
 import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog.tsx';
 import type { ImageModalProps } from '@/interfaces/image';
+import { displayName } from '@/lib/utils';
 
 export default function ImageModal({ image, onClose }: ImageModalProps) {
     return (
@@ -17,21 +18,19 @@ export default function ImageModal({ image, onClose }: ImageModalProps) {
                 showCloseButton={false}
             >
                 <DialogTitle className="sr-only">
-                    {image ? image.name.replace(/\.[^/.]+$/, '') : ''}
+                    {image ? displayName(image.name) : ''}
                 </DialogTitle>
 
                 {image && (
                     <>
                         <img
                             src={image.url}
-                            alt={image.name}
+                            alt={displayName(image.name)}
                             className="w-full rounded-lg shadow-lg"
                         />
 
                         <div className="mt-1">
-                            <h2 className="text-xl font-bold">
-                                {image.name.replace(/\.[^/.]+$/, '')}
-                            </h2>
+                            <h2 className="text-xl font-bold">{displayName(image.name)}</h2>
                         </div>
                     </>
                 )}
