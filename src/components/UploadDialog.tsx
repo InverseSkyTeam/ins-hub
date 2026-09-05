@@ -16,7 +16,7 @@ import {
 interface UploadDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    onUploaded: () => void;
+    onUploaded: (pathname: string) => void;
 }
 
 function formatBytes(bytes: number) {
@@ -55,14 +55,14 @@ export default function UploadDialog({ open, onOpenChange, onUploaded }: UploadD
         }
         setUploading(true);
         try {
-            await upload(`images/${file.name}`, file, {
+            const result = await upload(`images/${file.name}`, file, {
                 access: 'public',
                 clientPayload: JSON.stringify({ size: file.size, originalName: file.name }),
                 handleUploadUrl: '/api/upload',
             });
             toast.success('上传成功!', { position: 'top-center' });
             onOpenChange(false);
-            onUploaded();
+            onUploaded(result.pathname);
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : '上传失败，请稍后再试';
             toast.error('上传失败!', {

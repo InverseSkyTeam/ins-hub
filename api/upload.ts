@@ -19,6 +19,7 @@ const redis = redisFromEnv();
 const IMAGES_ZSET = 'inshub:images';
 const META_PREFIX = 'inshub:meta:';
 const WARM_KEY = 'inshub:images:warm';
+const UPDATED_KEY = 'inshub:images:updated';
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ALLOWED_CONTENT_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
 const IMAGE_EXT = /\.(png|jpe?g|webp|gif)$/i;
@@ -70,6 +71,7 @@ export async function POST(request: Request) {
                     uploadedAt: new Date(now).toISOString(),
                 });
                 pipeline.del(WARM_KEY);
+                pipeline.set(UPDATED_KEY, String(now));
                 await pipeline.exec();
             },
         });

@@ -21,6 +21,8 @@ const IMAGES_ZSET = 'inshub:images';
 const META_PREFIX = 'inshub:meta:';
 const WARM_KEY = 'inshub:images:warm';
 const WARM_TTL_SECONDS = 300;
+const UPDATED_KEY = 'inshub:images:updated';
+const SYNCED_KEY = 'inshub:images:synced';
 const IMAGE_EXT = /\.(png|jpe?g|webp|gif)$/i;
 
 type ImageRecord = {
@@ -115,8 +117,15 @@ function jsonResponse(data: unknown, init?: ResponseInit) {
 export async function GET(request: Request) {
     const refresh = new URL(request.url).searchParams.get('refresh') === 'true';
 
-    if (refresh) {
+    const updated = Number((await redis.get(UPDATED_KEY)) ?? 0);
+    const synced = Number((await redis.get(SYNCED_KEY)) ?? 0);
+    const pendingSync = updated > synced;
+
+    if (refresh || pendingSync) {
         await rebuildIndex();
+        if (pendingSync) {
+            await redis.set(SYNCED_KEY, String(updated));
+        }
     } else {
         const cached = await redis.zrange(IMAGES_ZSET, 0, -1, { rev: true });
         if (cached.length === 0) {

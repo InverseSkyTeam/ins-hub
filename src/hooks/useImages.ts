@@ -8,7 +8,7 @@ export function useImages() {
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
 
-    const fetchImages = React.useCallback(async () => {
+    const fetchImages = React.useCallback(async (): Promise<Image[]> => {
         try {
             setLoading(true);
             const res = await fetch('/api/images');
@@ -21,6 +21,7 @@ export function useImages() {
 
             setImages(data);
             setError(null);
+            return data;
         } catch (err: unknown) {
             let message: string = '无法获取图像，请稍后再试';
             if (err instanceof Error) {
@@ -32,6 +33,7 @@ export function useImages() {
                 duration: 3000,
             });
             setError(message);
+            return [];
         } finally {
             setLoading(false);
         }

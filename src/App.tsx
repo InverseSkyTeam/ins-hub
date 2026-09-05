@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import ThemeModeButton from '@/components/ThemeModeButton.tsx';
 import SearchInput from '@/components/SearchInput.tsx';
 import ImageCard from '@/components/ImageCard.tsx';
@@ -30,6 +30,20 @@ export default function App() {
             .toLowerCase()
             .replace(/\s+/g, '')
             .includes(searchQuery.toLowerCase().replace(/\s+/g, ''))
+    );
+
+    const handleUploaded = useCallback(
+        async (pathname: string) => {
+            const attempts = 3;
+            for (let i = 0; i < attempts; i++) {
+                const list = await refetch();
+                if (list.some((img) => img.pathname === pathname)) return;
+                if (i < attempts - 1) {
+                    await new Promise((resolve) => setTimeout(resolve, 1500));
+                }
+            }
+        },
+        [refetch]
     );
 
     return (
@@ -153,7 +167,11 @@ export default function App() {
 
             <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />
 
-            <UploadDialog open={uploadOpen} onOpenChange={setUploadOpen} onUploaded={refetch} />
+            <UploadDialog
+                open={uploadOpen}
+                onOpenChange={setUploadOpen}
+                onUploaded={handleUploaded}
+            />
 
             {!error && !loading && filteredImages.length > 0 && (
                 <footer className="py-6 text-center text-gray-600 dark:text-gray-400 text-sm">
