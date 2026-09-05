@@ -1,39 +1,31 @@
-import { useState, useEffect } from 'react';
 import { MoonStar, SunIcon } from 'lucide-react';
 
+import { useTheme } from '@/components/theme-provider.tsx';
+import { Button } from '@/components/ui/button.tsx';
+
+function resolveTheme(theme: 'dark' | 'light' | 'system'): 'dark' | 'light' {
+    if (theme === 'system') {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return theme;
+}
+
 export default function ThemeModeButton() {
-    const [isDark, setIsDark] = useState(() => {
-        const saved = localStorage.getItem('dark');
-        if (saved !== null) {
-            return saved === 'true';
-        }
-        return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    });
+    const { theme, setTheme } = useTheme();
+    const resolvedTheme = resolveTheme(theme);
 
-    useEffect(() => {
-        localStorage.setItem('dark', isDark.toString());
-
-        if (isDark) {
-            document.documentElement.classList.add('dark');
-            document.documentElement.setAttribute('data-theme', 'dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-            document.documentElement.setAttribute('data-theme', 'light');
-        }
-    }, [isDark]);
-
-    const Icon = isDark ? SunIcon : MoonStar;
-    const iconColor = isDark ? 'text-yellow-500' : 'text-blue-500';
+    const Icon = resolvedTheme === 'dark' ? SunIcon : MoonStar;
+    const iconColor = resolvedTheme === 'dark' ? 'text-yellow-500' : 'text-blue-500';
 
     const enableTransitions = () =>
         'startViewTransition' in document &&
         window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
 
     async function toggleDark({ clientX: x, clientY: y }: MouseEvent) {
-        const isDark = document.documentElement.classList.contains('dark');
+        const nextTheme = resolveTheme(theme) === 'dark' ? 'light' : 'dark';
 
         if (!enableTransitions()) {
-            setIsDark(!isDark);
+            setTheme(nextTheme);
             return;
         }
 
@@ -48,29 +40,33 @@ export default function ThemeModeButton() {
         ];
 
         await document.startViewTransition(() => {
-            setIsDark(!isDark);
+            setTheme(nextTheme);
         }).ready;
 
         document.documentElement.animate(
             {
-                clipPath: isDark ? clipPath : [...clipPath].reverse(),
+                clipPath: nextTheme === 'light' ? clipPath : [...clipPath].reverse(),
             },
             {
                 duration: 700,
                 easing: 'ease-in',
-                pseudoElement: isDark
-                    ? '::view-transition-new(root)'
-                    : '::view-transition-old(root)',
+                pseudoElement:
+                    nextTheme === 'light'
+                        ? '::view-transition-new(root)'
+                        : '::view-transition-old(root)',
             }
         );
     }
 
     return (
-        <button 
+        <Button
+            variant="ghost"
+            size="icon"
             onClick={(e) => toggleDark(e as unknown as MouseEvent)}
-            className="p-2 rounded-full transition-all duration-300 hover:bg-gray-200 dark:hover:bg-gray-800 hover:scale-110"
+            className="h-10 w-10 transition-transform duration-300 hover:scale-110"
+            aria-label={resolvedTheme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}
         >
-            <Icon className={iconColor} size={28} />
-        </button>
+            <Icon className={`size-7 ${iconColor}`} />
+        </Button>
     );
 }

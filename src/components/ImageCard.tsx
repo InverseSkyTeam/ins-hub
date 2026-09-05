@@ -1,27 +1,26 @@
 import { memo } from 'react';
 
+import { Card, CardContent } from '@/components/ui/card.tsx';
 import type { ImageCardProps } from '@/interfaces/image';
 
 function ImageCard({ image, onClick }: ImageCardProps) {
     return (
-        <div
-            className="card card-compact mb-4 break-inside-avoid bg-base-100/80 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1"
+        <Card
+            className="mb-4 break-inside-avoid shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
             onClick={onClick}
         >
-            <figure>
-                <img
-                    src={`./images/${image.name}`}
-                    alt={image.name.replace(/\.[^/.]+$/, '')}
-                    className="w-full h-auto"
-                    loading="lazy"
-                />
-            </figure>
-            <div className="card-body">
-                <p className="card-title justify-center text-sm font-medium truncate">
+            <img
+                src={image.url}
+                alt={image.name.replace(/\.[^/.]+$/, '')}
+                className="w-full h-auto"
+                loading="lazy"
+            />
+            <CardContent className="flex items-center justify-center py-3">
+                <p className="text-center text-sm font-medium truncate">
                     {image.name.replace(/\.[^/.]+$/, '')}
                 </p>
-            </div>
-        </div>
+            </CardContent>
+        </Card>
     );
 }
 

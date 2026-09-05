@@ -1,8 +1,11 @@
 export interface Image {
     id: string;
     name: string;
-    path: string;
-    download_url: string;
+    pathname: string;
+    url: string;
+    size?: number;
+    contentType?: string;
+    uploadedAt?: string;
 }
 
 export interface ImageCardProps {
