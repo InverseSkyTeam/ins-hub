@@ -62,11 +62,19 @@ async function rebuildIndex() {
     const blobs = await listAllBlobs();
     const images = blobs.filter((blob) => IMAGE_EXT.test(blob.pathname));
 
+    const raw = (await redis.zrange(IMAGES_ZSET, 0, -1, {
+        withScores: true,
+    })) as Array<string | number>;
+    const existingScores = new Map<string, number>();
+    for (let i = 0; i + 1 < raw.length; i += 2) {
+        existingScores.set(String(raw[i]), Number(raw[i + 1]));
+    }
+
     const pipeline = redis.pipeline();
     pipeline.del(IMAGES_ZSET);
     for (const blob of images) {
         pipeline.zadd(IMAGES_ZSET, {
-            score: blob.uploadedAt.getTime(),
+            score: existingScores.get(blob.pathname) ?? blob.uploadedAt.getTime(),
             member: blob.pathname,
         });
         pipeline.hset(metaKey(blob.pathname), blobToMeta(blob));

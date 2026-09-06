@@ -4,7 +4,9 @@ import SearchInput from '@/components/SearchInput.tsx';
 import ImageCard from '@/components/ImageCard.tsx';
 import ImageModal from '@/components/ImageModal.tsx';
 import UploadDialog from '@/components/UploadDialog.tsx';
-import { CircleX, Menu, Upload, Search } from 'lucide-react';
+import AdminDialog from '@/components/AdminDialog.tsx';
+import AdminPanel from '@/components/AdminPanel.tsx';
+import { CircleX, Menu, Shield, Upload, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button.tsx';
 import {
     DropdownMenu,
@@ -15,14 +17,26 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.tsx';
 import { useImages } from '@/hooks/useImages';
+import { useAdmin } from '@/hooks/useAdmin';
 import type { Image } from '@/interfaces/image';
 
 export default function App() {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedImage, setSelectedImage] = useState<Image | null>(null);
     const [uploadOpen, setUploadOpen] = useState(false);
+    const [adminDialogOpen, setAdminDialogOpen] = useState(false);
+    const [adminPanelOpen, setAdminPanelOpen] = useState(false);
 
     const { images, loading, error, refetch } = useImages();
+    const admin = useAdmin();
+
+    const handleAdminOpen = useCallback(() => {
+        if (!admin.valid) {
+            setAdminDialogOpen(true);
+        } else {
+            setAdminPanelOpen((prev) => !prev);
+        }
+    }, [admin.valid]);
 
     const filteredImages = images.filter((img) =>
         img.name
@@ -77,6 +91,18 @@ export default function App() {
                 <div className="flex items-center gap-3">
                     <ThemeModeButton />
 
+                    {admin.enabled && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="hidden md:inline-flex"
+                            aria-label="管理"
+                            onClick={handleAdminOpen}
+                        >
+                            <Shield className="h-5 w-5" />
+                        </Button>
+                    )}
+
                     <Button
                         onClick={() => setUploadOpen(true)}
                         className="hidden md:inline-flex gap-2"
@@ -102,6 +128,12 @@ export default function App() {
                                 <SearchInput value={searchQuery} onChange={setSearchQuery} />
                             </div>
                             <DropdownMenuSeparator />
+                            {admin.enabled && (
+                                <DropdownMenuItem onClick={handleAdminOpen}>
+                                    <Shield className="w-4 h-4" />
+                                    管理员面板
+                                </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem onClick={() => setUploadOpen(true)}>
                                 <Upload className="w-4 h-4" />
                                 上传新发言
@@ -112,54 +144,66 @@ export default function App() {
             </nav>
 
             <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
-                {!loading && !error && (
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                        <div className="flex flex-wrap gap-2"></div>
-                    </div>
-                )}
-
-                {loading ? (
-                    <div className="text-center py-20">
-                        <div className="animate-pulse bg-gradient-to-r from-blue-400 to-indigo-600 rounded-xl w-16 h-16 mx-auto mb-4"></div>
-                        <p className="text-gray-600 dark:text-gray-400">正在加载逆天发言...</p>
-                    </div>
-                ) : error ? (
-                    <div className="text-center py-20">
-                        <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto flex items-center justify-center">
-                            <CircleX className="h-8 w-8 text-red-500" />
-                        </div>
-                        <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-white">
-                            发生了一些错误! 请尝试刷新页面!
-                        </h3>
-                        <p className="mt-2 text-gray-600 dark:text-gray-400">{error}</p>
-                        <Button onClick={refetch} className="mt-4">
-                            重新加载
-                        </Button>
-                    </div>
+                {adminPanelOpen ? (
+                    <AdminPanel
+                        images={images}
+                        refetch={refetch}
+                        onBack={() => setAdminPanelOpen(false)}
+                    />
                 ) : (
                     <>
-                        <div className="w-full columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
-                            {filteredImages.map((img) => (
-                                <ImageCard
-                                    key={img.id}
-                                    image={img}
-                                    onClick={() => setSelectedImage(img)}
-                                />
-                            ))}
-                        </div>
+                        {!loading && !error && (
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                                <div className="flex flex-wrap gap-2"></div>
+                            </div>
+                        )}
 
-                        {filteredImages.length === 0 && (
+                        {loading ? (
                             <div className="text-center py-20">
-                                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto flex items-center justify-center">
-                                    <Search className="h-8 w-8 text-gray-500" />
-                                </div>
-                                <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-white">
-                                    未找到匹配的图片
-                                </h3>
-                                <p className="mt-2 text-gray-600 dark:text-gray-400">
-                                    尝试其他搜索关键词或上传新图片
+                                <div className="animate-pulse bg-gradient-to-r from-blue-400 to-indigo-600 rounded-xl w-16 h-16 mx-auto mb-4"></div>
+                                <p className="text-gray-600 dark:text-gray-400">
+                                    正在加载逆天发言...
                                 </p>
                             </div>
+                        ) : error ? (
+                            <div className="text-center py-20">
+                                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto flex items-center justify-center">
+                                    <CircleX className="h-8 w-8 text-red-500" />
+                                </div>
+                                <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-white">
+                                    发生了一些错误! 请尝试刷新页面!
+                                </h3>
+                                <p className="mt-2 text-gray-600 dark:text-gray-400">{error}</p>
+                                <Button onClick={refetch} className="mt-4">
+                                    重新加载
+                                </Button>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="w-full columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
+                                    {filteredImages.map((img) => (
+                                        <ImageCard
+                                            key={img.id}
+                                            image={img}
+                                            onClick={() => setSelectedImage(img)}
+                                        />
+                                    ))}
+                                </div>
+
+                                {filteredImages.length === 0 && (
+                                    <div className="text-center py-20">
+                                        <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto flex items-center justify-center">
+                                            <Search className="h-8 w-8 text-gray-500" />
+                                        </div>
+                                        <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-white">
+                                            未找到匹配的图片
+                                        </h3>
+                                        <p className="mt-2 text-gray-600 dark:text-gray-400">
+                                            尝试其他搜索关键词或上传新图片
+                                        </p>
+                                    </div>
+                                )}
+                            </>
                         )}
                     </>
                 )}
@@ -173,7 +217,13 @@ export default function App() {
                 onUploaded={handleUploaded}
             />
 
-            {!error && !loading && filteredImages.length > 0 && (
+            <AdminDialog
+                open={adminDialogOpen}
+                onOpenChange={setAdminDialogOpen}
+                onEnter={() => setAdminPanelOpen(true)}
+            />
+
+            {!adminPanelOpen && !error && !loading && filteredImages.length > 0 && (
                 <footer className="py-6 text-center text-gray-600 dark:text-gray-400 text-sm">
                     <p className="mt-1">共收录 {images.length} 条逆天发言</p>
                 </footer>
